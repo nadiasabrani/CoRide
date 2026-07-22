@@ -8,9 +8,10 @@ use App\ValueObjects\CompatibiliteResultat;
 class IaScoringService
 {
     public function calculerCompatibilite(array $trajet, array $besoinPassager): CompatibiliteResultat
-    {
-        $prompt = $this->construirePrompt($trajet, $besoinPassager);
+{
+    $prompt = $this->construirePrompt($trajet, $besoinPassager);
 
+    try {
         $response = (new TrajetCompatibiliteAgent)->prompt($prompt);
 
         return CompatibiliteResultat::fromArray([
@@ -18,8 +19,14 @@ class IaScoringService
             'justification' => $response['justification'],
             'horaire_suggere' => $response['horaire_suggere'] ?? null,
         ]);
+    } catch (\InvalidArgumentException $e) {
+        // La réponse IA ne respecte pas le format attendu
+        throw new \RuntimeException(
+            "La réponse de l'IA est invalide : {$e->getMessage()}",
+            previous: $e
+        );
     }
-
+}
     private function construirePrompt(array $trajet, array $besoinPassager): string
     {
         return <<<PROMPT
