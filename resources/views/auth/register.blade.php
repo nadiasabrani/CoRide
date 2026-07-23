@@ -7,8 +7,9 @@
             <x-input-label for="entreprise_id" value="Entreprise" />
 
             <select id="entreprise_id" name="entreprise_id" class="block mt-1 w-full rounded-md border-gray-300" required>
+                <option value="" disabled selected>Choisissez votre entreprise</option>
                 @foreach($entreprises as $entreprise)
-                    <option value="{{ $entreprise->id }}">
+                    <option value="{{ $entreprise->id }}" @selected(old('entreprise_id') == $entreprise->id)>
                         {{ $entreprise->nom }}
                     </option>
                 @endforeach
@@ -19,7 +20,7 @@
 
         <!-- Nom -->
         <div class="mt-4">
-            <x-input-label for="nom" value="Nom" />
+            <x-input-label for="nom" value="Nom complet" />
             <x-text-input
                 id="nom"
                 class="block mt-1 w-full"
@@ -32,35 +33,31 @@
             <x-input-error :messages="$errors->get('nom')" class="mt-2" />
         </div>
 
-        <!-- Prénom -->
+        <!-- Ville de résidence -->
         <div class="mt-4">
-            <x-input-label for="prenom" value="Prénom" />
+            <x-input-label for="ville_residence" value="Ville de résidence" />
             <x-text-input
-                id="prenom"
+                id="ville_residence"
                 class="block mt-1 w-full"
                 type="text"
-                name="prenom"
-                :value="old('prenom')"
+                name="ville_residence"
+                :value="old('ville_residence')"
                 required
             />
-            <x-input-error :messages="$errors->get('prenom')" class="mt-2" />
+            <x-input-error :messages="$errors->get('ville_residence')" class="mt-2" />
         </div>
 
-        <!-- Ville -->
+        <!-- Rôle -->
         <div class="mt-4">
-            <x-input-label for="ville" value="Ville" />
-            <x-text-input
-                id="ville"
-                class="block mt-1 w-full"
-                type="text"
-                name="ville"
-                :value="old('ville')"
-                required
-            />
-            <x-input-error :messages="$errors->get('ville')" class="mt-2" />
+            <x-input-label for="role" value="Rôle" />
+            <select id="role" name="role" class="block mt-1 w-full rounded-md border-gray-300" required>
+                <option value="" disabled selected>Sélectionnez un rôle</option>
+                <option value="conducteur" @selected(old('role') === 'conducteur')>Conducteur</option>
+                <option value="passager" @selected(old('role') === 'passager')>Passager</option>
+                <option value="les_deux" @selected(old('role') === 'les_deux')>Les deux</option>
+            </select>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
-
-
 
         <!-- Email -->
         <div class="mt-4">

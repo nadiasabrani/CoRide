@@ -19,16 +19,13 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
-        $entreprise = Entreprise::create([
-            'nom' => 'Coride',
-            'ville' => 'Casablanca',
-        ]);
+        $entreprise = Entreprise::factory()->create();
 
         $response = $this->post('/register', [
             'entreprise_id' => $entreprise->id,
-            'nom' => 'Test',
-            'prenom' => 'User',
-            'ville' => 'Casablanca',
+            'nom' => 'Test User',
+            'ville_residence' => 'Casablanca',
+            'role' => 'passager',
             'email' => 'test@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
@@ -36,7 +33,30 @@ class RegistrationTest extends TestCase
 
         $this->assertAuthenticated();
 
-       $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('dashboard', absolute: false));
+
+        $this->assertDatabaseHas('employes', [
+            'email' => 'test@example.com',
+            'entreprise_id' => $entreprise->id,
+            'role' => 'passager',
+        ]);
+    }
+
+    public function test_registration_requires_a_valid_role(): void
+    {
+        $entreprise = Entreprise::factory()->create();
+
+        $response = $this->post('/register', [
+            'entreprise_id' => $entreprise->id,
+            'nom' => 'Test User',
+            'ville_residence' => 'Casablanca',
+            'role' => 'admin',
+            'email' => 'test2@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors('role');
+        $this->assertGuest();
     }
 }
-

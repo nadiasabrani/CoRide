@@ -7,7 +7,8 @@ use App\Models\Employe;
 class EmployePolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Tout employé authentifié peut consulter l'annuaire des employés
+     * (utile pour identifier des collègues avec qui covoiturer).
      */
     public function viewAny(Employe $user): bool
     {
@@ -15,49 +16,44 @@ class EmployePolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Tout employé authentifié peut consulter le profil public d'un collègue.
      */
-    public function view(Employe $user, User $model): bool
+    public function view(Employe $user, Employe $model): bool
     {
-        return $user->id === $model->id || $user->role === 'admin';
+        return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * La création d'un compte se fait uniquement via l'inscription (register),
+     * jamais via une action autorisée par la policy.
      */
     public function create(Employe $user): bool
-    {
-        return $user->role === 'admin';
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(Employe $user, User $model): bool
-    {
-        return $user->id === $model->id || $user->role === 'admin';
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(Employe $user, User $model): bool
-    {
-        return $user->role === 'admin';
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(Employe $user, User $model): bool
     {
         return false;
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * Un employé ne peut modifier que son propre profil.
      */
-    public function forceDelete(Employe $user, User $model): bool
+    public function update(Employe $user, Employe $model): bool
+    {
+        return $user->id === $model->id;
+    }
+
+    /**
+     * Un employé ne peut supprimer que son propre compte.
+     */
+    public function delete(Employe $user, Employe $model): bool
+    {
+        return $user->id === $model->id;
+    }
+
+    public function restore(Employe $user, Employe $model): bool
+    {
+        return false;
+    }
+
+    public function forceDelete(Employe $user, Employe $model): bool
     {
         return false;
     }

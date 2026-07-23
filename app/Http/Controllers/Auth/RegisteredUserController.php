@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -20,7 +21,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        $entreprises = Entreprise::all();
+        $entreprises = Entreprise::orderBy('nom')->get();
 
         return view('auth.register', compact('entreprises'));
     }
@@ -30,27 +31,27 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'entreprise_id' => ['required', 'exists:entreprises,id'],
             'nom' => ['required', 'string', 'max:255'],
-            'prenom' => ['required', 'string', 'max:255'],
-            'ville' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
+            'ville_residence' => ['required', 'string', 'max:255'],
+            'role' => ['required', Rule::in(['conducteur', 'passager', 'les_deux'])],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:employes,email'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->nom . ' ' . $request->prenom,
-            'entreprise_id' => $request->entreprise_id,
-            'ville' => $request->ville,
-            'role' => 'employe',
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        $employe = Employe::create([
+            'nom' => $validated['nom'],
+            'entreprise_id' => $validated['entreprise_id'],
+            'ville_residence' => $validated['ville_residence'],
+            'role' => $validated['role'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
-        event(new Registered($user));
+        event(new Registered($employe));
 
-        Auth::login($user);
+        Auth::login($employe);
 
         return redirect(route('dashboard', absolute: false));
     }
