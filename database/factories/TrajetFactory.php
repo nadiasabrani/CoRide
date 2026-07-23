@@ -15,10 +15,17 @@ class TrajetFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
-    {
-        return [
-            //
-        ];
-    }
+public function definition(): array
+{
+    return [
+        'entreprise_id' => \App\Models\Entreprise::inRandomOrder()->first()->id,
+        'conducteur_id' => \App\Models\Employe::inRandomOrder()->first()->id,
+        'depart' => fake()->city(),
+        'destination' => fake()->city(),
+        'date_depart' => fake()->date(),
+        'heure_depart' => fake()->time(),
+        'prix' => fake()->randomFloat(2, 20, 150),
+        'places' => fake()->numberBetween(1, 5),
+    ];
+}
 }

@@ -12,7 +12,7 @@ class TrajetController extends Controller
      */
     public function index()
     {
-        $trajets = Trajet::with('entreprise')->get();
+        $trajets = Trajet::with(['entreprise', 'conducteur'])->get();
 
         return view('trajets.index', compact('trajets'));
     }
@@ -38,9 +38,9 @@ class TrajetController extends Controller
             'prix' => 'required|numeric',
             'places' => 'required|integer|min:1',
         ]);
-
-        Trajet::create([
+          Trajet::create([
             'entreprise_id' => auth()->user()->entreprise_id,
+            'conducteur_id' => auth()->id(),
             'depart' => $request->depart,
             'destination' => $request->destination,
             'date_depart' => $request->date_depart,
