@@ -1,19 +1,31 @@
-// app/Models/Trajet.php (placeholder مؤقت)
 <?php
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Trajet extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
-        'conducteur_id', 'ville_depart', 'ville_arrivee',
-        'horaire', 'places_disponibles', 'jours_recurrence',
+        'entreprise_id',
+        'depart',
+        'destination',
+        'date_depart',
+        'heure_depart',
+        'prix',
+        'places',
     ];
 
-    public function placesRestantes(): int
+    public function entreprise()
     {
-        return $this->places_disponibles ?? 0;
+        return $this->belongsTo(Entreprise::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

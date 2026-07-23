@@ -2,25 +2,36 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * Les attributs assignables.
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'entreprise_id',
+        'ville',
+        'role',
+    ];
+
+    /**
+     * Les attributs cachés.
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Les conversions de types.
      */
     protected function casts(): array
     {
@@ -28,5 +39,21 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Relation avec l'entreprise.
+     */
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class);
+    }
+
+    /**
+     * Relation avec les réservations.
+     */
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }
