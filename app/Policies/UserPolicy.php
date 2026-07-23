@@ -2,14 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\User;
+use App\Models\Employe;
 
 class UserPolicy
 {
     /**
      * Admin فقط يشوف لائحة المستخدمين
      */
-    public function viewAny(User $user): bool
+    public function viewAny(Employe $user): bool
     {
         return $user->role === 'admin';
     }
@@ -18,7 +18,7 @@ class UserPolicy
     /**
      * Admin يشوف User معين
      */
-    public function view(User $user, User $model): bool
+    public function view(Employe $user, User $model): bool
     {
         return $user->role === 'admin';
     }
@@ -27,7 +27,7 @@ class UserPolicy
     /**
      * Admin يقدر يزيد User
      */
-    public function create(User $user): bool
+    public function create(Employe $user): bool
     {
         return $user->role === 'admin';
     }
@@ -36,7 +36,7 @@ class UserPolicy
     /**
      * Admin يقدر يعدل User
      */
-    public function update(User $user, User $model): bool
+    public function update(Employe $user, User $model): bool
     {
         return $user->role === 'admin';
     }
@@ -45,19 +45,19 @@ class UserPolicy
     /**
      * Admin يقدر يحذف User
      */
-    public function delete(User $user, User $model): bool
+    public function delete(Employe $user, User $model): bool
     {
         return $user->role === 'admin';
     }
 
 
-    public function restore(User $user, User $model): bool
+    public function restore(Employe $user, User $model): bool
     {
         return $user->role === 'admin';
     }
 
 
-    public function forceDelete(User $user, User $model): bool
+    public function forceDelete(Employe $user, User $model): bool
     {
         return $user->role === 'admin';
     }
