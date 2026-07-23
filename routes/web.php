@@ -1,13 +1,16 @@
 <?php
+
 use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrajetController;
 use App\Http\Controllers\ReservationController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 Route::get('/dashboard', [EmployeController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
