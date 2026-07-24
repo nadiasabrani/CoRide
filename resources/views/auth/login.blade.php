@@ -2,19 +2,50 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    {{-- Bannière Aide à la connexion Démo --}}
+    <div class="mb-6 p-4 bg-brand-50 dark:bg-brand-900/40 border border-brand-200 dark:border-brand-700/60 rounded-xl">
+        <p class="text-xs font-bold uppercase tracking-wider text-brand-700 dark:text-brand-300 mb-2">
+            💡 Comptes de démonstration
+        </p>
+        <div class="space-y-1.5 text-xs text-gray-700 dark:text-gray-300">
+            <p>
+                <strong>Admin Démo :</strong>
+                <button type="button" onclick="fillLogin('admin@coride.ma', 'password')"
+                        class="text-brand-600 dark:text-brand-400 font-mono underline hover:text-brand-800">
+                    admin@coride.ma
+                </button>
+            </p>
+            <p>
+                <strong>Conducteur :</strong>
+                <button type="button" onclick="fillLogin('k.benali@mobilitech.ma', 'password')"
+                        class="text-brand-600 dark:text-brand-400 font-mono underline hover:text-brand-800">
+                    k.benali@mobilitech.ma
+                </button>
+            </p>
+            <p>
+                <strong>Passager :</strong>
+                <button type="button" onclick="fillLogin('s.alaoui@mobilitech.ma', 'password')"
+                        class="text-brand-600 dark:text-brand-400 font-mono underline hover:text-brand-800">
+                    s.alaoui@mobilitech.ma
+                </button>
+            </p>
+            <p class="text-[11px] text-gray-400 mt-1">Mot de passe pour tous : <code class="bg-gray-200 dark:bg-gray-700 px-1 rounded">password</code></p>
+        </div>
+    </div>
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
         <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
+            <x-input-label for="email" :value="__('Email professionnel')" />
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Mot de passe')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -27,21 +58,28 @@
         <!-- Remember Me -->
         <div class="block mt-4">
             <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
+                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-brand-600 shadow-sm focus:ring-brand-500 dark:focus:ring-brand-600 dark:focus:ring-offset-gray-800" name="remember">
+                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Se souvenir de moi') }}</span>
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+        <div class="flex items-center justify-between mt-6">
+            @if (Route::has('register'))
+                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-brand-600 dark:hover:text-brand-400" href="{{ route('register') }}">
+                    Pas de compte ? S'inscrire
                 </a>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
+            <x-primary-button class="ms-3 bg-brand-600 hover:bg-brand-700">
+                {{ __('Connexion') }}
             </x-primary-button>
         </div>
     </form>
+
+    <script>
+    function fillLogin(email, password) {
+        document.getElementById('email').value = email;
+        document.getElementById('password').value = password;
+    }
+    </script>
 </x-guest-layout>

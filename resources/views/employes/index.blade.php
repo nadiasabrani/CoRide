@@ -56,7 +56,7 @@
                                 <td class="px-4 py-3">{{ $employe->ville_residence }}</td>
                                 <td class="px-4 py-3">{{ str_replace('_', ' ', $employe->role) }}</td>
                                 <td class="px-4 py-3">
-                                    <a href="{{ route('employes.show', $employe) }}" class="text-indigo-600 underline">Voir</a>
+                                    <a href="{{ route('employes.show', $employe) }}" class="text-brand-600 underline">Voir</a>
                                 </td>
                             </tr>
                         @empty

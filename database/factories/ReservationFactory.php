@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Employe;
 use App\Models\Reservation;
+use App\Models\Trajet;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +20,10 @@ class ReservationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'trajet_id' => Trajet::factory(),
+            'passager_id' => Employe::factory(),
+            'statut' => fake()->randomElement(['en_attente', 'confirmee', 'refusee', 'annulee']),
+            'date_reservation' => fake()->dateTimeBetween('-2 months', 'now'),
         ];
     }
 }

@@ -14,7 +14,7 @@
                 <p><b>Ville de résidence :</b> {{ $employe->ville_residence }}</p>
                 <p><b>Rôle :</b> {{ str_replace('_', ' ', $employe->role) }}</p>
 
-                <a href="{{ route('employes.index') }}" class="text-indigo-600 underline text-sm">← Retour à l'annuaire</a>
+                <a href="{{ route('employes.index') }}" class="text-brand-600 underline text-sm">← Retour à l'annuaire</a>
             </div>
         </div>
     </div>
