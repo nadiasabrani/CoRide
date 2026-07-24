@@ -2,100 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreReservationRequest;
 use App\Models\Reservation;
 use App\Models\Trajet;
+use App\Services\ReservationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ReservationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(
+        private readonly ReservationService $reservationService
+    ) {
+    }
+
+    public function index(Request $request)
     {
-        $reservations = Reservation::with(['user', 'trajet'])->get();
+        $reservations = $request->user()
+            ->reservations()
+            ->with('trajet')
+            ->latest('date_reservation')
+            ->get();
 
         return view('reservations.index', compact('reservations'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(StoreReservationRequest $request)
     {
-        $trajets = Trajet::all();
+        $trajet = Trajet::findOrFail($request->validated()['trajet_id']);
 
-        return view('reservations.create', compact('trajets'));
+        try {
+            $this->reservationService->creerReservation($trajet, $request->user());
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['trajet_id' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->route('reservations.index')
+            ->with('success', 'Réservation créée avec succès, en attente de confirmation du conducteur.');
     }
 
-    /**
-     * Store a newly created resource.
-     */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'trajet_id' => 'required|exists:trajets,id',
-            'nombre_places' => 'required|integer|min:1',
-        ]);
-
-        Reservation::create([
-            'user_id' => auth()->id(),
-            'trajet_id' => $request->trajet_id,
-            'nombre_places' => $request->nombre_places,
-            'statut' => 'en_attente',
-        ]);
-
-        return redirect()->route('reservations.index')
-                         ->with('success', 'Réservation créée avec succès.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Reservation $reservation)
-    {
-        return view('reservations.show', compact('reservation'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Reservation $reservation)
-    {
-        $trajets = Trajet::all();
-
-        return view('reservations.edit', compact('reservation', 'trajets'));
-    }
-
-    /**
-     * Update the specified resource.
-     */
-    public function update(Request $request, Reservation $reservation)
-    {
-        $request->validate([
-            'trajet_id' => 'required|exists:trajets,id',
-            'nombre_places' => 'required|integer|min:1',
-            'statut' => 'required|string',
-        ]);
-
-        $reservation->update([
-            'trajet_id' => $request->trajet_id,
-            'nombre_places' => $request->nombre_places,
-            'statut' => $request->statut,
-        ]);
-
-        return redirect()->route('reservations.index')
-                         ->with('success', 'Réservation modifiée avec succès.');
-    }
-
-    /**
-     * Remove the specified resource.
-     */
     public function destroy(Reservation $reservation)
     {
-        $reservation->delete();
+        Gate::authorize('annuler', $reservation);
 
-        return redirect()->route('reservations.index')
-                         ->with('success', 'Réservation supprimée avec succès.');
+        try {
+            $this->reservationService->changerStatut($reservation, Reservation::STATUT_ANNULEE);
+        } catch (\InvalidArgumentException $e) {
+            return back()->withErrors(['reservation' => $e->getMessage()]);
+        }
+
+        return redirect()
+            ->route('reservations.index')
+            ->with('success', 'Réservation annulée.');
     }
 }
