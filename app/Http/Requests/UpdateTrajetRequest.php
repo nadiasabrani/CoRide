@@ -7,28 +7,32 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTrajetRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'depart' => 'required|string|max:255',
-            'destination' => 'required|string|max:255',
-            'date_depart' => 'required|date',
-            'heure_depart' => 'required',
-            'prix' => 'required|numeric|min:0',
-            'places' => 'required|integer|min:1',
+            'depart'           => 'required|string|max:255',
+            'destination'      => 'required|string|max:255',
+            'date_depart'      => 'required|date',
+            'heure_depart'     => 'required|date_format:H:i',
+            'prix'             => 'required|numeric|min:0|max:9999',
+            'places'           => 'required|integer|min:1|max:8',
+            'jours_recurrence' => 'nullable|array',
+            'jours_recurrence.*' => 'in:lundi,mardi,mercredi,jeudi,vendredi,samedi,dimanche',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'places.max' => 'Le nombre de places ne peut pas dépasser 8.',
         ];
     }
 }

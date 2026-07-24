@@ -4,67 +4,61 @@ namespace App\Policies;
 
 use App\Models\Employe;
 use App\Models\Trajet;
-use Illuminate\Auth\Access\Response;
 
 class TrajetPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Tout employé connecté peut voir la liste des trajets.
      */
     public function viewAny(Employe $employe): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Tout employé connecté peut voir le détail d'un trajet.
      */
     public function view(Employe $employe, Trajet $trajet): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Determine whether the user can create models.
+     * Un employé ayant le rôle conducteur ou les_deux peut créer un trajet.
      */
     public function create(Employe $employe): bool
     {
-        return false;
+        return in_array($employe->role, ['conducteur', 'les_deux']);
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Seul le conducteur propriétaire peut modifier son trajet.
      */
     public function update(Employe $employe, Trajet $trajet): bool
     {
-        return false;
+        return $trajet->conducteur_id === $employe->id;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * Seul le conducteur propriétaire peut supprimer un trajet,
+     * et uniquement si aucune réservation n'est confirmée.
      */
     public function delete(Employe $employe, Trajet $trajet): bool
-{
-    if ($trajet->conducteur_id !== $employe->id) {
-        return false;
+    {
+        if ($trajet->conducteur_id !== $employe->id) {
+            return false;
+        }
+
+        return !$trajet->reservations()
+            ->where('statut', 'confirmee')
+            ->exists();
     }
 
-    return !$trajet->reservations()
-        ->where('statut', 'confirmee')
-        ->exists();
-}
-
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(Employe $employe, Trajet $trajet): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(Employe $employe, Trajet $trajet): bool
     {
         return false;

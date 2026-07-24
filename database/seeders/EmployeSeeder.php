@@ -10,34 +10,55 @@ use Illuminate\Support\Facades\Hash;
 class EmployeSeeder extends Seeder
 {
     /**
-     * Peuple la table employes : 1 compte de démo + 40 employés
-     * répartis sur les 5 entreprises partenaires.
+     * Peuple la table employes depuis le fichier CSV fourni.
+     * Crée aussi le compte de démo admin@coride.ma.
      */
     public function run(): void
     {
-        // Compte de démo simple à utiliser en soutenance (mot de passe : password).
+        // 1. Compte de démo pour la soutenance
         Employe::updateOrCreate(
             ['email' => 'admin@coride.ma'],
             [
                 'entreprise_id' => Entreprise::where('nom', 'MobiliTech')->value('id') ?? Entreprise::first()->id,
-                'nom' => 'Admin Coride',
+                'nom'           => 'Admin CoRide',
                 'ville_residence' => 'Casablanca',
-                'role' => 'les_deux',
-                'password' => Hash::make('password'),
+                'role'          => 'les_deux',
+                'password'      => Hash::make('password'),
             ]
         );
 
-        $entreprises = Entreprise::all();
-
-        if ($entreprises->isEmpty()) {
+        // 2. Lecture du CSV
+        $csvPath = database_path('data/employes.csv');
+        if (!file_exists($csvPath)) {
+            $this->command->warn('EmployeSeeder: employes.csv introuvable, seeder ignoré.');
             return;
         }
 
-        // 40 employés répartis équitablement sur les entreprises partenaires.
-        $entreprises->each(function (Entreprise $entreprise) {
-            Employe::factory()
-                ->count(8)
-                ->create(['entreprise_id' => $entreprise->id]);
-        });
+        $handle = fopen($csvPath, 'r');
+        $header = fgetcsv($handle); // Ignorer l'en-tête
+
+        while (($row = fgetcsv($handle)) !== false) {
+            [$id, $nom, $email, $nomEntreprise, $villeResidence, $role] = $row;
+
+            $entreprise = Entreprise::where('nom', $nomEntreprise)->first();
+            if (!$entreprise) {
+                continue;
+            }
+
+            Employe::updateOrCreate(
+                ['email' => $email],
+                [
+                    'nom'             => $nom,
+                    'entreprise_id'   => $entreprise->id,
+                    'ville_residence' => $villeResidence,
+                    'role'            => $role,
+                    'password'        => Hash::make('password'),
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
+
+        fclose($handle);
+        $this->command->info('EmployeSeeder : ' . Employe::count() . ' employés en base.');
     }
 }

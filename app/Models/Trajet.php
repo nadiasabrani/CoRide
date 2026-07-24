@@ -18,6 +18,12 @@ class Trajet extends Model
         'heure_depart',
         'prix',
         'places',
+        'jours_recurrence',
+    ];
+
+    protected $casts = [
+        'date_depart'      => 'date',
+        'jours_recurrence' => 'array',
     ];
 
     public function entreprise()
@@ -51,5 +57,46 @@ class Trajet extends Model
             ->count();
 
         return max(0, $this->places - $placesOccupees);
+    }
+
+    /**
+     * Retourne les jours de récurrence formatés lisiblement.
+     */
+    public function joursRecurrenceFormates(): string
+    {
+        $jours = $this->jours_recurrence;
+
+        if (empty($jours)) {
+            return 'Trajet ponctuel';
+        }
+
+        // Si c'est une chaîne JSON ou une chaîne séparée par des virgules
+        if (is_string($jours)) {
+            $decoded = json_decode($jours, true);
+            if (is_array($decoded)) {
+                $jours = $decoded;
+            } else {
+                $jours = array_filter(array_map('trim', explode(',', $jours)));
+            }
+        }
+
+        if (!is_array($jours) || empty($jours)) {
+            return 'Trajet ponctuel';
+        }
+
+        $labels = [
+            'lundi'    => 'Lun',
+            'mardi'    => 'Mar',
+            'mercredi' => 'Mer',
+            'jeudi'    => 'Jeu',
+            'vendredi' => 'Ven',
+            'samedi'   => 'Sam',
+            'dimanche' => 'Dim',
+        ];
+
+        return implode(', ', array_map(
+            fn ($j) => $labels[mb_strtolower(trim($j))] ?? $j,
+            $jours
+        ));
     }
 }

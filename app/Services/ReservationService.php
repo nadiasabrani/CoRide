@@ -14,6 +14,17 @@ class ReservationService
      */
     public function peutReserver(Trajet $trajet, Employe $passager): bool
     {
+        // 1. Un conducteur strict (rôle === 'conducteur') ne peut pas réserver de trajet
+        if ($passager->role === 'conducteur') {
+            return false;
+        }
+
+        // 2. Un conducteur ne peut pas réserver son propre trajet
+        if ($trajet->conducteur_id === $passager->id) {
+            return false;
+        }
+
+        // 3. Un passager ne peut pas réserver deux fois le même trajet
         $dejaReserve = Reservation::where('trajet_id', $trajet->id)
             ->where('passager_id', $passager->id)
             ->exists();
