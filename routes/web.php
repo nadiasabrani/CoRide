@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ReservationStatusController;
 
+Route::resource('employes', EmployeController::class);
 Route::put('/reservations/{reservation}/statut', [ReservationStatusController::class, 'update'])
     ->name('reservations.statut.update');
 Route::get('/', function () {
