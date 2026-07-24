@@ -12,7 +12,7 @@ class UpdateTrajetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,12 @@ class UpdateTrajetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'depart' => 'required|string|max:255',
+            'destination' => 'required|string|max:255',
+            'date_depart' => 'required|date',
+            'heure_depart' => 'required',
+            'prix' => 'required|numeric|min:0',
+            'places' => 'required|integer|min:1',
         ];
     }
 }

@@ -4,15 +4,16 @@ use App\Http\Controllers\EmployeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TrajetController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\TrajetSearchController;
 
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-
-Route::get('/dashboard', [EmployeController::class, 'dashboard'])
+Route::get('/dashboard', [TrajetController::class, 'dashboard'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -23,8 +24,9 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Annuaire des employés
-    Route::resource('employes', EmployeController::class)->only(['index', 'show']);
+    // recherche des trajets
+Route::get('/trajets/search', [TrajetSearchController::class, 'index'])
+    ->name('trajets.search');
 
     // Trajets
     Route::resource('trajets', TrajetController::class);

@@ -19,6 +19,10 @@
                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                     + Ajouter un trajet
                 </a>
+                <a href="{{ route('trajets.search') }}"
+   class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+    Rechercher
+</a>
             </div>
 
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
