@@ -69,11 +69,73 @@
                     <a href="{{ route('employes.index') }}" class="text-indigo-600 underline">Annuaire des employés</a>
                     <a href="{{ route('trajets.index') }}" class="text-indigo-600 underline">Trajets disponibles</a>
                     <a href="{{ route('reservations.index') }}" class="text-indigo-600 underline">Mes réservations</a>
+                         <a href="{{ route('trajets.search') }}" class="text-indigo-600 underline">
+    Rechercher un trajet
+</a>
                 </div>
 
             </div>
 
         </div>
     </div>
+<hr class="my-8">
 
+<h3 class="text-2xl font-bold mb-4">
+    🚗 Mes trajets publiés
+</h3>
+
+<a href="{{ route('trajets.create') }}"
+   class="bg-blue-600 text-white px-4 py-2 rounded">
+    Publier un trajet
+</a>
+
+<div class="mt-4">
+    <table class="min-w-full border">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border p-2">Départ</th>
+                <th class="border p-2">Destination</th>
+                <th class="border p-2">Date</th>
+                <th class="border p-2">Heure</th>
+                <th class="border p-2">Places</th>
+                <th class="border p-2">Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($trajets as $trajet)
+                <tr>
+                    <td class="border p-2">{{ $trajet->depart }}</td>
+                    <td class="border p-2">{{ $trajet->destination }}</td>
+                    <td class="border p-2">{{ $trajet->date_depart }}</td>
+                    <td class="border p-2">{{ $trajet->heure_depart }}</td>
+                    <td class="border p-2">{{ $trajet->places }}</td>
+
+                    <td class="border p-2">
+                        <a href="{{ route('trajets.edit', $trajet) }}">
+                            Modifier
+                        </a>
+
+                        <form action="{{ route('trajets.destroy', $trajet) }}"
+                              method="POST"
+                              style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+
+                            <button onclick="return confirm('Supprimer ?')">
+                                Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center">
+                        Aucun trajet publié.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 </x-app-layout>

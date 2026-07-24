@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trajet;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreTrajetRequest;
+use App\Http\Requests\UpdateTrajetRequest;
 
 class TrajetController extends Controller
 {
@@ -16,6 +17,14 @@ class TrajetController extends Controller
 
         return view('trajets.index', compact('trajets'));
     }
+    public function dashboard()
+{
+    $employe = auth()->user();
+
+    $trajets = Trajet::where('conducteur_id', $employe->id)->get();
+
+    return view('dashboard', compact('employe', 'trajets'));
+}
 
     /**
      * Show the form for creating a new resource.
@@ -28,30 +37,22 @@ class TrajetController extends Controller
     /**
      * Store a newly created resource.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'depart' => 'required|string|max:255',
-            'destination' => 'required|string|max:255',
-            'date_depart' => 'required|date',
-            'heure_depart' => 'required',
-            'prix' => 'required|numeric',
-            'places' => 'required|integer|min:1',
-        ]);
-          Trajet::create([
-            'entreprise_id' => auth()->user()->entreprise_id,
-            'conducteur_id' => auth()->id(),
-            'depart' => $request->depart,
-            'destination' => $request->destination,
-            'date_depart' => $request->date_depart,
-            'heure_depart' => $request->heure_depart,
-            'prix' => $request->prix,
-            'places' => $request->places,
-        ]);
+public function store(StoreTrajetRequest $request)
+{
+    Trajet::create([
+        'entreprise_id' => auth()->user()->entreprise_id,
+        'conducteur_id' => auth()->id(),
+        'depart' => $request->depart,
+        'destination' => $request->destination,
+        'date_depart' => $request->date_depart,
+        'heure_depart' => $request->heure_depart,
+        'prix' => $request->prix,
+        'places' => $request->places,
+    ]);
 
-        return redirect()->route('trajets.index')
-            ->with('success', 'Trajet ajouté avec succès.');
-    }
+    return redirect()->route('trajets.index')
+        ->with('success', 'Trajet ajouté avec succès.');
+}
 
     /**
      * Display the specified resource.
@@ -72,38 +73,32 @@ class TrajetController extends Controller
     /**
      * Update the specified resource.
      */
-    public function update(Request $request, Trajet $trajet)
-    {
-        $request->validate([
-            'depart' => 'required|string|max:255',
-            'destination' => 'required|string|max:255',
-            'date_depart' => 'required|date',
-            'heure_depart' => 'required',
-            'prix' => 'required|numeric',
-            'places' => 'required|integer|min:1',
-        ]);
+public function update(UpdateTrajetRequest $request, Trajet $trajet)
+{
+    $trajet->update([
+        'depart' => $request->depart,
+        'destination' => $request->destination,
+        'date_depart' => $request->date_depart,
+        'heure_depart' => $request->heure_depart,
+        'prix' => $request->prix,
+        'places' => $request->places,
+    ]);
 
-        $trajet->update([
-            'depart' => $request->depart,
-            'destination' => $request->destination,
-            'date_depart' => $request->date_depart,
-            'heure_depart' => $request->heure_depart,
-            'prix' => $request->prix,
-            'places' => $request->places,
-        ]);
-
-        return redirect()->route('trajets.index')
-            ->with('success', 'Trajet modifié avec succès.');
-    }
+    return redirect()->route('trajets.index')
+        ->with('success', 'Trajet modifié avec succès.');
+}
 
     /**
      * Remove the specified resource.
      */
-    public function destroy(Trajet $trajet)
-    {
-        $trajet->delete();
+   public function destroy(Trajet $trajet)
+{
+    $this->authorize('delete', $trajet);
 
-        return redirect()->route('trajets.index')
-            ->with('success', 'Trajet supprimé avec succès.');
-    }
+    $trajet->delete();
+
+    return redirect()->route('trajets.index')
+        ->with('success', 'Trajet supprimé avec succès.');
+}
+
 }
