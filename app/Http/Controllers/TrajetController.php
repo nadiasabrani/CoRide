@@ -13,18 +13,38 @@ class TrajetController extends Controller
      */
     public function index()
     {
-        $trajets = Trajet::with(['entreprise', 'conducteur'])->get();
+        $trajets = Trajet::with(['conducteur', 'reservations', 'entreprise'])
+            ->orderBy('date_depart')
+            ->get();
 
         return view('trajets.index', compact('trajets'));
     }
     public function dashboard()
-{
-    $employe = auth()->user();
+    {
+        $employe = auth()->user();
 
-    $trajets = Trajet::where('conducteur_id', $employe->id)->get();
+        $trajets = Trajet::with(['reservations'])
+            ->where('conducteur_id', $employe->id)
+            ->orderBy('date_depart')
+            ->get();
 
-    return view('dashboard', compact('employe', 'trajets'));
-}
+        // Statistiques pour le conducteur
+        $totalReservationsRecues = $trajets->sum(fn ($t) => $t->reservations->count());
+        $reservationsEnAttente   = $trajets->sum(
+            fn ($t) => $t->reservations->where('statut', \App\Models\Reservation::STATUT_EN_ATTENTE)->count()
+        );
+
+        // Statistiques pour le passager
+        $mesReservations = \App\Models\Reservation::where('passager_id', $employe->id)->count();
+
+        return view('dashboard', compact(
+            'employe',
+            'trajets',
+            'totalReservationsRecues',
+            'reservationsEnAttente',
+            'mesReservations'
+        ));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -37,28 +57,32 @@ class TrajetController extends Controller
     /**
      * Store a newly created resource.
      */
-public function store(StoreTrajetRequest $request)
-{
-    Trajet::create([
-        'entreprise_id' => auth()->user()->entreprise_id,
-        'conducteur_id' => auth()->id(),
-        'depart' => $request->depart,
-        'destination' => $request->destination,
-        'date_depart' => $request->date_depart,
-        'heure_depart' => $request->heure_depart,
-        'prix' => $request->prix,
-        'places' => $request->places,
-    ]);
+    public function store(StoreTrajetRequest $request)
+    {
+        $jours = $request->input('jours_recurrence');
 
-    return redirect()->route('trajets.index')
-        ->with('success', 'Trajet ajouté avec succès.');
-}
+        Trajet::create([
+            'entreprise_id'    => auth()->user()->entreprise_id,
+            'conducteur_id'    => auth()->id(),
+            'depart'           => $request->depart,
+            'destination'      => $request->destination,
+            'date_depart'      => $request->date_depart,
+            'heure_depart'     => $request->heure_depart,
+            'prix'             => $request->prix,
+            'places'           => $request->places,
+            'jours_recurrence' => !empty($jours) ? $jours : null,
+        ]);
+
+        return redirect()->route('trajets.index')
+            ->with('success', 'Trajet publié avec succès.');
+    }
 
     /**
      * Display the specified resource.
      */
     public function show(Trajet $trajet)
     {
+        $trajet->load(['conducteur.entreprise', 'reservations.passager', 'entreprise']);
         return view('trajets.show', compact('trajet'));
     }
 
@@ -73,20 +97,25 @@ public function store(StoreTrajetRequest $request)
     /**
      * Update the specified resource.
      */
-public function update(UpdateTrajetRequest $request, Trajet $trajet)
-{
-    $trajet->update([
-        'depart' => $request->depart,
-        'destination' => $request->destination,
-        'date_depart' => $request->date_depart,
-        'heure_depart' => $request->heure_depart,
-        'prix' => $request->prix,
-        'places' => $request->places,
-    ]);
+    public function update(UpdateTrajetRequest $request, Trajet $trajet)
+    {
+        $this->authorize('update', $trajet);
 
-    return redirect()->route('trajets.index')
-        ->with('success', 'Trajet modifié avec succès.');
-}
+        $jours = $request->input('jours_recurrence');
+
+        $trajet->update([
+            'depart'           => $request->depart,
+            'destination'      => $request->destination,
+            'date_depart'      => $request->date_depart,
+            'heure_depart'     => $request->heure_depart,
+            'prix'             => $request->prix,
+            'places'           => $request->places,
+            'jours_recurrence' => !empty($jours) ? $jours : null,
+        ]);
+
+        return redirect()->route('trajets.show', $trajet)
+            ->with('success', 'Trajet modifié avec succès.');
+    }
 
     /**
      * Remove the specified resource.
