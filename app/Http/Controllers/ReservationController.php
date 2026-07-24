@@ -56,4 +56,19 @@ class ReservationController extends Controller
             ->route('reservations.index')
             ->with('success', 'Réservation annulée.');
     }
+
+    /**
+     * Vue "gestion" pour le conducteur : tous ses trajets avec les
+     * réservations reçues sur chacun d'eux (C2.7).
+     */
+    public function gestionConducteur(Request $request)
+    {
+        $trajets = $request->user()
+            ->trajetsConduits()
+            ->with(['reservations.passager'])
+            ->latest('date_depart')
+            ->get();
+
+        return view('reservations.manage', compact('trajets'));
+    }
 }

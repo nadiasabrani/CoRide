@@ -9,7 +9,8 @@ use App\Http\Controllers\TrajetSearchController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ReservationStatusController;
-
+Route::get('/conducteur/reservations', [ReservationController::class, 'gestionConducteur'])
+    ->name('reservations.conducteur.index');
 Route::resource('employes', EmployeController::class);
 Route::put('/reservations/{reservation}/statut', [ReservationStatusController::class, 'update'])
     ->name('reservations.statut.update');
