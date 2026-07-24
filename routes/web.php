@@ -8,7 +8,10 @@ use App\Http\Controllers\TrajetSearchController;
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ReservationStatusController;
 
+Route::put('/reservations/{reservation}/statut', [ReservationStatusController::class, 'update'])
+    ->name('reservations.statut.update');
 Route::get('/', function () {
     return view('welcome');
 });
