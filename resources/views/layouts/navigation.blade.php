@@ -1,100 +1,115 @@
-<nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+<nav x-data="{ open: false }" class="bg-[#111827] border-b border-white/10 sticky top-0 z-50 shadow-md">
     @php
         $user = Auth::user();
         $isConducteur = in_array($user->role, ['conducteur', 'les_deux']);
         $isPassager   = in_array($user->role, ['passager', 'les_deux']);
     @endphp
 
-    <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
-                        <div class="h-9 w-9 bg-brand-700 rounded-xl flex items-center justify-center shadow-md">
-                            <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h8m-8 4h8m-4 4h4M3 9l4-4m0 0l4 4M7 5v14"/>
-                            </svg>
-                        </div>
-                        <span class="text-xl font-extrabold text-brand-700 dark:text-brand-400 tracking-tight">CoRide</span>
-                    </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-1 sm:-my-px sm:ms-8 sm:flex items-center">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        🏠 Dashboard
-                    </x-nav-link>
-
-                    @if($isPassager)
-                        <x-nav-link :href="route('trajets.search')" :active="request()->routeIs('trajets.search')">
-                            🔍 Recherche
-                        </x-nav-link>
-                    @endif
-
-                    <x-nav-link :href="route('trajets.index')" :active="request()->routeIs('trajets.index')">
-                        🚗 Tous les Trajets
-                    </x-nav-link>
-
-                    @if($isPassager)
-                        <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
-                            📋 Mes réservations
-                        </x-nav-link>
-                    @endif
-
-                    @if($isConducteur)
-                        <x-nav-link :href="route('reservations.conducteur.index')"
-                                    :active="request()->routeIs('reservations.conducteur.index')">
-                            🎛️ Gestion Conducteur
-                        </x-nav-link>
-                    @endif
-                </div>
+        <div class="flex justify-between h-16 items-center">
+            
+            <!-- Logo -->
+            <div class="shrink-0 flex items-center">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group">
+                    <div class="h-9 w-9 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-blue-500/20 group-hover:bg-blue-500 transition">
+                        <svg class="h-5 w-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h8m-8 4h8m-4 4h4M3 9l4-4m0 0l4 4M7 5v14"/>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-display font-extrabold text-xl tracking-tight text-white">CoRide</span>
+                        <span class="text-[10px] font-mono uppercase text-blue-400 font-semibold tracking-wider -mt-1">MobiliTech</span>
+                    </div>
+                </a>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <!-- Nav Links -->
+            <div class="hidden sm:flex items-center gap-2">
+                <a href="{{ route('dashboard') }}"
+                   class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {{ request()->routeIs('dashboard') ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5' }}">
+                    🏠 Dashboard
+                </a>
+
+                @if($isPassager)
+                    <a href="{{ route('trajets.search') }}"
+                       class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {{ request()->routeIs('trajets.search') ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5' }}">
+                        🔍 Recherche
+                    </a>
+                @endif
+
+                <a href="{{ route('trajets.index') }}"
+                   class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {{ request()->routeIs('trajets.index') ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5' }}">
+                    🚗 Trajets
+                </a>
+
+                @if($isPassager)
+                    <a href="{{ route('reservations.index') }}"
+                       class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {{ request()->routeIs('reservations.index') ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5' }}">
+                        📋 Réservations
+                    </a>
+                @endif
+
+                @if($isConducteur)
+                    <a href="{{ route('reservations.conducteur.index') }}"
+                       class="px-3.5 py-2 rounded-lg text-sm font-semibold transition {{ request()->routeIs('reservations.conducteur.index') ? 'bg-blue-600/15 text-blue-400 border border-blue-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5' }}">
+                        🎛️ Gestion Conducteur
+                    </a>
+                @endif
+            </div>
+
+            <!-- Actions & User Profile -->
+            <div class="hidden sm:flex items-center gap-3">
+                @if($isConducteur)
+                    <a href="{{ route('trajets.create') }}" class="btn-pro-primary text-xs py-2 px-3.5">
+                        ➕ Publier un trajet
+                    </a>
+                @endif
+
+                <!-- User Dropdown -->
                 <x-dropdown align="right" width="56">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div class="text-left">
-                                <div class="font-bold text-gray-800 dark:text-gray-200">{{ $user->nom }}</div>
-                                <div class="text-[11px] text-brand-500 capitalize font-semibold">{{ str_replace('_', ' ', $user->role) }}</div>
+                        <button class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 bg-white/5 transition text-left">
+                            <div class="h-7 w-7 rounded-md bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold flex items-center justify-center text-xs">
+                                {{ strtoupper(substr($user->nom, 0, 2)) }}
                             </div>
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                                </svg>
+                            <div>
+                                <p class="text-xs font-bold text-white leading-none">{{ $user->nom }}</p>
+                                <p class="text-[10px] font-mono text-blue-400 capitalize mt-0.5">{{ str_replace('_', ' ', $user->role) }}</p>
                             </div>
+                            <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            👤 {{ __('Mon Profil') }}
-                        </x-dropdown-link>
-
-                        @if($isConducteur)
-                            <x-dropdown-link :href="route('trajets.create')">
-                                ➕ {{ __('Publier un trajet') }}
+                        <div class="bg-[#1E293B] border border-white/10 rounded-lg shadow-xl overflow-hidden py-1 text-sm">
+                            <div class="px-4 py-2.5 border-b border-white/10">
+                                <p class="text-xs font-mono text-slate-400 uppercase">Utilisateur</p>
+                                <p class="text-xs font-medium text-white truncate mt-0.5">{{ $user->email }}</p>
+                            </div>
+                            <x-dropdown-link :href="route('profile.edit')">
+                                👤 Mon Profil
                             </x-dropdown-link>
-                        @endif
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault(); this.closest('form').submit();">
-                                🚪 {{ __('Déconnexion') }}
-                            </x-dropdown-link>
-                        </form>
+                            @if($isConducteur)
+                                <x-dropdown-link :href="route('trajets.create')">
+                                    ➕ Publier un trajet
+                                </x-dropdown-link>
+                            @endif
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
+                                    🚪 Déconnexion
+                                </x-dropdown-link>
+                            </form>
+                        </div>
                     </x-slot>
                 </x-dropdown>
             </div>
 
-            <!-- Hamburger -->
+            <!-- Hamburger button -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none transition">
+                <button @click="open = ! open" class="p-2 rounded-md text-slate-300 hover:bg-white/10 transition">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -104,55 +119,25 @@
         </div>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                🏠 Dashboard
-            </x-responsive-nav-link>
-
-            @if($isPassager)
-                <x-responsive-nav-link :href="route('trajets.search')" :active="request()->routeIs('trajets.search')">
-                    🔍 Recherche
-                </x-responsive-nav-link>
-            @endif
-
-            <x-responsive-nav-link :href="route('trajets.index')" :active="request()->routeIs('trajets.index')">
-                🚗 Tous les Trajets
-            </x-responsive-nav-link>
-
-            @if($isPassager)
-                <x-responsive-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
-                    📋 Mes réservations
-                </x-responsive-nav-link>
-            @endif
-
-            @if($isConducteur)
-                <x-responsive-nav-link :href="route('reservations.conducteur.index')" :active="request()->routeIs('reservations.conducteur.index')">
-                    🎛️ Gestion Conducteur
-                </x-responsive-nav-link>
-            @endif
-        </div>
-
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ $user->nom }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ $user->email }} ({{ str_replace('_', ' ', $user->role) }})</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    👤 {{ __('Mon Profil') }}
-                </x-responsive-nav-link>
-
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault(); this.closest('form').submit();">
-                        🚪 {{ __('Déconnexion') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
+    <!-- Mobile menu -->
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-[#111827] border-t border-white/10 py-3 px-4 space-y-2">
+        <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-white/5">🏠 Dashboard</a>
+        @if($isPassager)
+            <a href="{{ route('trajets.search') }}" class="block px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-white/5">🔍 Recherche</a>
+        @endif
+        <a href="{{ route('trajets.index') }}" class="block px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-white/5">🚗 Trajets</a>
+        @if($isPassager)
+            <a href="{{ route('reservations.index') }}" class="block px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-white/5">📋 Réservations</a>
+        @endif
+        @if($isConducteur)
+            <a href="{{ route('reservations.conducteur.index') }}" class="block px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-white/5">🎛️ Gestion Conducteur</a>
+        @endif
+        <div class="pt-3 border-t border-white/10 flex items-center justify-between">
+            <span class="text-xs text-slate-300 font-semibold">{{ $user->nom }}</span>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-xs text-rose-400 font-semibold hover:underline">Déconnexion</button>
+            </form>
         </div>
     </div>
 </nav>

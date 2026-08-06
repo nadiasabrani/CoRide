@@ -27,6 +27,22 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
+    /**
+     * Formulaire d'ajout d'une réservation : liste les trajets réservables
+     * (hors trajets conduits par l'utilisateur lui-même) pour que le
+     * passager choisisse celui qui l'intéresse et vérifie sa compatibilité IA.
+     */
+    public function create(Request $request)
+    {
+        $trajets = Trajet::with('conducteur')
+            ->where('conducteur_id', '!=', $request->user()->id)
+            ->orderBy('date_depart')
+            ->orderBy('heure_depart')
+            ->get();
+
+        return view('reservations.create', compact('trajets'));
+    }
+
     public function store(StoreReservationRequest $request)
     {
         $trajet = Trajet::findOrFail($request->validated()['trajet_id']);

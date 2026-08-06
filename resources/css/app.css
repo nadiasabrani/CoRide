@@ -1,182 +1,211 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@theme {
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-
-    /* CoRide brand — vibrant electric blue: professional but with energy */
-    --color-brand-50:  #EFF5FF;
-    --color-brand-100: #DBE9FF;
-    --color-brand-200: #B7D2FF;
-    --color-brand-300: #85B2FF;
-    --color-brand-400: #4C89FF;
-    --color-brand-500: #2563EB;
-    --color-brand-600: #1D4ED8;
-    --color-brand-700: #1E40AF;
-    --color-brand-800: #1E3A8A;
-    --color-brand-900: #172554;
-
-    /* CoRide accent — a punchy lime, the youthful "go" signal used to punctuate key moments */
-    --color-accent-50:  #F6FCE6;
-    --color-accent-100: #EAF8C4;
-    --color-accent-200: #D3EF8E;
-    --color-accent-300: #BADD5C;
-    --color-accent-400: #A0CC33;
-    --color-accent-500: #86B821;
-    --color-accent-600: #6B9419;
-    --color-accent-700: #557414;
-}
-
-/* ==========================================================================
-   CoRide Custom Vanilla CSS Design Tokens & Aesthetics
-   ========================================================================== */
-
 :root {
-    --card-shadow: 0 1px 2px rgba(23, 37, 84, 0.05), 0 1px 1px rgba(23, 37, 84, 0.03);
-    --hover-shadow: 0 8px 20px -6px rgba(37, 99, 235, 0.25);
+    /* Apple-Style Minimalist Dark Theme */
+    --bg-main: #000000;
+    --bg-surface: #1C1C1E;
+    --bg-card: #1C1C1E;
+
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-accent: rgba(10, 132, 255, 0.35);
+
+    --text-heading: #F5F5F7;
+    --text-body: #F5F5F7;
+    --text-muted: #98989D;
+    --text-faint: #636366;
+
+    --brand-primary: #0A84FF;
+    --brand-hover: #409CFF;
+    --accent-emerald: #30D158;
+    --accent-violet: #5E5CE6;
+    --accent-amber: #FF9F0A;
+    --accent-rose: #FF453A;
+
+    /* Extra dark-theme surface tones used by hardcoded overrides below */
+    --bg-elevated: #2C2C2E;
+    --bg-elevated-hover: #3A3A3C;
 }
 
-/* Signature motif: a route line with origin/destination dots and a travelling marker,
-   echoing a live trip on a map — reused across the hero mockup and step connectors */
-.route-line {
-    position: relative;
-    height: 2px;
-    background: repeating-linear-gradient(to right, var(--color-brand-300) 0 6px, transparent 6px 12px);
-}
-.route-line::before,
-.route-line::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 8px;
-    height: 8px;
-    border-radius: 9999px;
-    transform: translateY(-50%);
-    background: var(--color-brand-500);
-}
-.route-line::before { left: -3px; }
-.route-line::after { right: -3px; background: var(--color-accent-500); }
-
-@keyframes routeTravel {
-    0%   { left: 0%; opacity: 0; }
-    8%   { opacity: 1; }
-    92%  { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
-}
-.route-line .route-car {
-    position: absolute;
-    top: 50%;
-    width: 7px;
-    height: 7px;
-    border-radius: 9999px;
-    background: var(--color-accent-500);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-400) 30%, transparent);
-    transform: translate(-50%, -50%);
-    animation: routeTravel 3.2s ease-in-out infinite;
-}
-
-/* Dot-grid texture — a quiet map-like backdrop for sections, not a decoration on its own */
-.dot-grid {
-    background-image: radial-gradient(var(--color-brand-200) 1px, transparent 1px);
-    background-size: 24px 24px;
-}
-.dot-grid-dark {
-    background-image: radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px);
-    background-size: 22px 22px;
-}
-
-/* Live route ticker — a departure-board style marquee, the site's signature element */
-@keyframes tickerScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-.route-ticker {
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
-}
-.route-ticker-track {
-    display: flex;
-    width: max-content;
-    gap: 2.5rem;
-    animation: tickerScroll 26s linear infinite;
-}
-.route-ticker:hover .route-ticker-track {
-    animation-play-state: paused;
-}
-
-/* Smooth Scrolling & Font Anti-aliasing */
 html {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-body);
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
+body {
+    background-color: var(--bg-main);
+    color: var(--text-body);
+    min-height: 100vh;
+}
+
+/* Clear typography styling */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-heading) !important;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+p, span, label, div {
+    color: inherit;
+}
+
+/* Force dark minimalist style over Tailwind defaults & Breeze dark mode */
+.bg-gray-100, .dark\:bg-gray-900, .bg-slate-50 {
+    background-color: var(--bg-main) !important;
+}
+
+.bg-white, .dark\:bg-gray-800 {
+    background-color: var(--bg-card) !important;
+}
+
+.text-gray-900, .text-slate-900, .dark\:text-gray-100, .dark\:text-gray-200, .text-gray-800 {
+    color: var(--text-heading) !important;
+}
+
+.text-gray-700, .text-gray-600, .text-gray-500, .dark\:text-gray-400, .dark\:text-gray-300 {
+    color: var(--text-muted) !important;
+}
+
+.border-gray-100, .border-gray-200, .border-gray-300, .dark\:border-gray-700 {
+    border-color: var(--border-subtle) !important;
+}
+
+/* Corporate/Minimalist Cards */
+.pro-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 1rem; /* Slightly more rounded Apple-style */
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.pro-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Buttons */
+.btn-pro-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background-color: var(--brand-primary);
+    color: #FFFFFF !important;
+    font-weight: 500;
+    font-size: 0.9375rem; /* 15px, classic Apple */
+    border-radius: 0.75rem;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.2);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.btn-pro-primary:hover {
+    background-color: var(--brand-hover);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.btn-pro-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background-color: var(--bg-elevated);
+    color: var(--text-heading) !important;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    border-radius: 0.75rem;
+    border: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.btn-pro-secondary:hover {
+    background-color: var(--bg-elevated-hover);
+}
+
+/* Badges */
+.pro-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px; /* Pill shaped badges */
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+.pro-badge-emerald {
+    background: rgba(52, 199, 89, 0.1);
+    color: var(--accent-emerald) !important;
+}
+.pro-badge-blue {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--brand-primary) !important;
+}
+.pro-badge-amber {
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--accent-amber) !important;
+}
+.pro-badge-rose {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--accent-rose) !important;
+}
+.pro-badge-slate {
+    background: var(--bg-elevated);
+    color: var(--text-muted) !important;
+}
+
+/* Input Fields */
+.pro-input {
+    width: 100%;
+    background: var(--bg-elevated) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--text-heading) !important;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.625rem;
+    font-size: 0.9375rem;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+}
+.pro-input::placeholder {
+    color: var(--text-muted) !important;
+}
+.pro-input:focus {
+    border-color: var(--brand-primary) !important;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15) !important;
+}
+
+/* Route Line Motif */
+.route-line-pro {
+    position: relative;
+    height: 2px;
+    background: repeating-linear-gradient(to right, #48484A 0 6px, transparent 6px 12px);
+    width: 100%;
+}
+.route-line-pro::before, .route-line-pro::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     width: 8px;
     height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f5f9;
-}
-
-.dark ::-webkit-scrollbar-track {
-    background: #0f172a;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
     border-radius: 9999px;
 }
+.route-line-pro::before { left: 0; background: var(--brand-primary); }
+.route-line-pro::after { right: 0; background: var(--accent-emerald); }
 
-.dark ::-webkit-scrollbar-thumb {
-    background: #334155;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
-}
-
-/* Panel utility — flat, bordered card (glassmorphism/blur removed for a corporate finish) */
-.glass-panel {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-}
-
-.dark .glass-panel {
-    background: #0f172a;
-    border: 1px solid #1e293b;
-}
-
-/* Micro-interactions — a colorful lift, matching a more energetic direction */
-.hover-lift {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
-}
-
-.hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--hover-shadow);
-    border-color: var(--color-brand-300);
-}
-
-/* Status badges — flat, no glow; color still carries meaning, restrained intensity */
-.badge-glow-green,
-.badge-glow-purple,
-.badge-glow-amber {
-    box-shadow: none;
-}
-
-/* Progress bar animation */
-@keyframes progressPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.85; }
-}
-
-.animate-progress {
-    animation: progressPulse 2s ease-in-out infinite;
-}
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: #48484A; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #636366; }

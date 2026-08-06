@@ -1,24 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Annuaire des employés
+        <h2 class="font-display font-bold text-2xl text-white">
+            👥 Annuaire des employés
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-            <div class="bg-white dark:bg-gray-800 p-6 shadow rounded-lg">
+            <!-- Filter Card -->
+            <div class="pro-card p-6">
                 <form method="GET" class="flex flex-wrap gap-4 items-end">
                     <div>
-                        <x-input-label for="ville" value="Ville" />
-                        <x-text-input id="ville" name="ville" type="text" class="mt-1" value="{{ request('ville') }}" placeholder="Casablanca..." />
+                        <label for="ville" class="block text-xs font-mono font-semibold uppercase text-slate-300 mb-1.5">Ville</label>
+                        <input id="ville" name="ville" type="text" class="pro-input" value="{{ request('ville') }}" placeholder="Ex: Casablanca..." />
                     </div>
 
                     <div>
-                        <x-input-label for="entreprise_id" value="Entreprise" />
-                        <select id="entreprise_id" name="entreprise_id" class="mt-1 rounded-md border-gray-300">
-                            <option value="">Toutes</option>
+                        <label for="entreprise_id" class="block text-xs font-mono font-semibold uppercase text-slate-300 mb-1.5">Entreprise</label>
+                        <select id="entreprise_id" name="entreprise_id" class="pro-input">
+                            <option value="">Toutes les entreprises</option>
                             @foreach($entreprises as $entreprise)
                                 <option value="{{ $entreprise->id }}" @selected(request('entreprise_id') == $entreprise->id)>
                                     {{ $entreprise->nom }}
@@ -27,48 +28,61 @@
                         </select>
                     </div>
 
-                    <x-primary-button>Filtrer</x-primary-button>
+                    <button type="submit" class="btn-pro-primary">Filtrer</button>
 
                     @if(request()->hasAny(['ville', 'entreprise_id']))
-                        <a href="{{ route('employes.index') }}" class="text-sm text-gray-600 underline">Réinitialiser</a>
+                        <a href="{{ route('employes.index') }}" class="btn-pro-secondary text-xs">✕ Réinitialiser</a>
                     @endif
                 </form>
             </div>
 
-            <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                            <th class="px-4 py-3">Nom</th>
-                            <th class="px-4 py-3">Email</th>
-                            <th class="px-4 py-3">Entreprise</th>
-                            <th class="px-4 py-3">Ville</th>
-                            <th class="px-4 py-3">Rôle</th>
-                            <th class="px-4 py-3"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($employes as $employe)
-                            <tr class="border-t border-gray-100 dark:border-gray-700">
-                                <td class="px-4 py-3">{{ $employe->nom }}</td>
-                                <td class="px-4 py-3">{{ $employe->email }}</td>
-                                <td class="px-4 py-3">{{ $employe->entreprise->nom ?? '—' }}</td>
-                                <td class="px-4 py-3">{{ $employe->ville_residence }}</td>
-                                <td class="px-4 py-3">{{ str_replace('_', ' ', $employe->role) }}</td>
-                                <td class="px-4 py-3">
-                                    <a href="{{ route('employes.show', $employe) }}" class="text-brand-600 underline">Voir</a>
-                                </td>
-                            </tr>
-                        @empty
+            <!-- Employes Table -->
+            <div class="pro-card overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-[#0D1420] text-xs font-mono uppercase text-slate-400 border-b border-white/10">
                             <tr>
-                                <td colspan="6" class="px-4 py-6 text-center text-gray-500">Aucun employé trouvé.</td>
+                                <th class="px-6 py-4">Nom</th>
+                                <th class="px-6 py-4">Email</th>
+                                <th class="px-6 py-4">Entreprise</th>
+                                <th class="px-6 py-4">Ville</th>
+                                <th class="px-6 py-4">Rôle</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-white/5">
+                            @forelse($employes as $employe)
+                                <tr class="hover:bg-white/5 transition">
+                                    <td class="px-6 py-4 font-bold text-white">{{ $employe->nom }}</td>
+                                    <td class="px-6 py-4 text-slate-300 font-mono text-xs">{{ $employe->email }}</td>
+                                    <td class="px-6 py-4 text-slate-300 font-semibold">{{ $employe->entreprise->nom ?? '—' }}</td>
+                                    <td class="px-6 py-4 text-slate-300">{{ $employe->ville_residence }}</td>
+                                    <td class="px-6 py-4">
+                                        <span class="pro-badge pro-badge-blue capitalize">
+                                            {{ str_replace('_', ' ', $employe->role) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="{{ route('employes.show', $employe) }}" class="btn-pro-secondary text-xs py-1 px-3">
+                                            Voir profil →
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-slate-400 font-mono text-xs">
+                                        Aucun employé ne correspond aux critères de recherche.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            {{ $employes->links() }}
+            <div class="pt-2">
+                {{ $employes->links() }}
+            </div>
         </div>
     </div>
 </x-app-layout>

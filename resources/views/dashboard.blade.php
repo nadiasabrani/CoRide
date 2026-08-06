@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-display font-bold text-2xl text-white">
             Tableau de bord
         </h2>
     </x-slot>
@@ -10,213 +10,188 @@
         $isPassager   = in_array($employe->role, ['passager', 'les_deux']);
     @endphp
 
-    <div class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-            {{-- Bienvenue --}}
-            <div class="bg-brand-700 rounded-2xl shadow-lg p-8 text-white">
-                <div class="flex items-center gap-4">
-                    <div class="bg-white/20 rounded-full p-4">
-                        <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                        </svg>
+            {{-- Bienvenue Banner --}}
+            <div class="pro-card p-8 bg-gradient-to-r from-blue-900/40 via-indigo-900/30 to-[#151D2A] border-l-4 border-l-blue-500">
+                <div class="flex items-center gap-5">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 text-white font-bold text-xl flex items-center justify-center font-display shadow-lg shadow-blue-500/20 shrink-0">
+                        {{ strtoupper(substr($employe->nom, 0, 2)) }}
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold">Bienvenue, {{ $employe->nom }} 👋</h3>
-                        <p class="text-brand-200 mt-1">
-                            {{ $employe->email }} •
-                            <span class="font-medium capitalize px-2 py-0.5 bg-white/20 rounded-full text-xs">Rôle : {{ str_replace('_', ' ', $employe->role) }}</span>
-                            • {{ optional($employe->entreprise)->nom }}
+                        <h3 class="text-2xl font-bold text-white">Bienvenue, {{ $employe->nom }} 👋</h3>
+                        <p class="text-slate-300 text-sm mt-1 flex flex-wrap items-center gap-2">
+                            <span>{{ $employe->email }}</span>
+                            <span class="text-slate-500">•</span>
+                            <span class="pro-badge pro-badge-blue capitalize">Rôle : {{ str_replace('_', ' ', $employe->role) }}</span>
+                            <span class="text-slate-500">•</span>
+                            <span class="text-slate-200 font-semibold">{{ optional($employe->entreprise)->nom }}</span>
                         </p>
                     </div>
                 </div>
             </div>
 
-            {{-- Stats rapides adaptées au rôle --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
+            {{-- Quick Stats --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 @if($isConducteur)
-                    {{-- Trajets publiés --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 border-l-4 border-brand-500">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Trajets publiés</p>
-                        <p class="text-3xl font-bold text-brand-600 mt-1">{{ $trajets->count() }}</p>
-                        <a href="{{ route('trajets.index') }}" class="text-sm text-brand-500 hover:underline mt-2 block">Voir tous →</a>
+                    <div class="pro-card p-5 border-l-4 border-l-blue-500">
+                        <p class="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">Trajets publiés</p>
+                        <p class="text-3xl font-extrabold text-white mt-2">{{ $trajets->count() }}</p>
+                        <a href="{{ route('trajets.index') }}" class="text-xs font-semibold text-blue-400 hover:text-blue-300 mt-3 inline-block">Voir tous les trajets →</a>
                     </div>
 
-                    {{-- Réservations reçues (conducteur) --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 border-l-4 border-green-500">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Demandes reçues</p>
-                        <p class="text-3xl font-bold text-green-600 mt-1">{{ $totalReservationsRecues }}</p>
-                        <a href="{{ route('reservations.conducteur.index') }}" class="text-sm text-green-500 hover:underline mt-2 block">Gérer →</a>
+                    <div class="pro-card p-5 border-l-4 border-l-emerald-500">
+                        <p class="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">Demandes reçues</p>
+                        <p class="text-3xl font-extrabold text-emerald-400 mt-2">{{ $totalReservationsRecues }}</p>
+                        <a href="{{ route('reservations.conducteur.index') }}" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 mt-3 inline-block">Gérer les demandes →</a>
                     </div>
 
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 border-l-4 border-yellow-500">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Demandes en attente</p>
-                        <p class="text-3xl font-bold text-yellow-600 mt-1">{{ $reservationsEnAttente }}</p>
-                        <a href="{{ route('reservations.conducteur.index') }}" class="text-sm text-yellow-500 hover:underline mt-2 block">Traiter →</a>
+                    <div class="pro-card p-5 border-l-4 border-l-amber-500">
+                        <p class="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">En attente</p>
+                        <p class="text-3xl font-extrabold text-amber-400 mt-2">{{ $reservationsEnAttente }}</p>
+                        <a href="{{ route('reservations.conducteur.index') }}" class="text-xs font-semibold text-amber-400 hover:text-amber-300 mt-3 inline-block">Traiter →</a>
                     </div>
                 @endif
 
                 @if($isPassager)
-                    {{-- Mes réservations passager --}}
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 border-l-4 border-brand-500">
-                        <p class="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Mes réservations</p>
-                        <p class="text-3xl font-bold text-brand-600 mt-1">{{ $mesReservations }}</p>
-                        <a href="{{ route('reservations.index') }}" class="text-sm text-brand-500 hover:underline mt-2 block">Voir →</a>
+                    <div class="pro-card p-5 border-l-4 border-l-indigo-500">
+                        <p class="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">Mes réservations</p>
+                        <p class="text-3xl font-extrabold text-indigo-400 mt-2">{{ $mesReservations }}</p>
+                        <a href="{{ route('reservations.index') }}" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 mt-3 inline-block">Voir mes demandes →</a>
                     </div>
                 @endif
             </div>
 
-            {{-- Actions rapides adaptées --}}
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
-                <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-4">Actions rapides</h4>
+            {{-- Quick Actions --}}
+            <div class="pro-card p-6">
+                <h4 class="font-bold text-white text-base mb-4">Actions rapides</h4>
                 <div class="flex flex-wrap gap-3">
                     @if($isPassager)
-                        <a href="{{ route('trajets.search') }}"
-                           class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg transition">
+                        <a href="{{ route('trajets.search') }}" class="btn-pro-primary">
                             🔍 Rechercher un trajet
                         </a>
-                        <a href="{{ route('reservations.index') }}"
-                           class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg transition">
+                        <a href="{{ route('reservations.index') }}" class="btn-pro-secondary">
                             📋 Mes réservations
                         </a>
                     @endif
 
                     @if($isConducteur)
-                        <a href="{{ route('trajets.create') }}"
-                           class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
+                        <a href="{{ route('trajets.create') }}" class="btn-pro-primary">
                             ➕ Publier un trajet
                         </a>
-                        <a href="{{ route('reservations.conducteur.index') }}"
-                           class="inline-flex items-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition">
+                        <a href="{{ route('reservations.conducteur.index') }}" class="btn-pro-secondary">
                             🎛️ Gérer les demandes
                         </a>
                     @endif
 
-                    <a href="{{ route('employes.index') }}"
-                       class="inline-flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                    <a href="{{ route('employes.index') }}" class="btn-pro-secondary">
                         👥 Annuaire
                     </a>
                 </div>
             </div>
 
-            {{-- Profil & Entreprise --}}
+            {{-- Profile & Entreprise Grid --}}
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
-                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-4">👤 Mon profil</h4>
-                    <dl class="space-y-2 text-sm">
+                <div class="pro-card p-6 space-y-4">
+                    <h4 class="font-bold text-white text-base border-b border-white/10 pb-3">👤 Mon profil</h4>
+                    <dl class="space-y-3 text-sm">
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Nom</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ $employe->nom }}</dd>
+                            <dt class="text-slate-400">Nom complet</dt>
+                            <dd class="font-semibold text-white">{{ $employe->nom }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Email</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ $employe->email }}</dd>
+                            <dt class="text-slate-400">Email professionnel</dt>
+                            <dd class="font-medium text-slate-200">{{ $employe->email }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Ville de résidence</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ $employe->ville_residence }}</dd>
+                            <dt class="text-slate-400">Ville de résidence</dt>
+                            <dd class="font-semibold text-white">{{ $employe->ville_residence }}</dd>
                         </div>
-                        <div class="flex justify-between">
-                            <dt class="text-gray-500">Rôle</dt>
-                            <dd>
-                                <span class="px-2 py-1 rounded-full text-xs font-semibold
-                                    {{ $employe->role === 'conducteur' ? 'bg-blue-100 text-blue-800' :
-                                       ($employe->role === 'passager' ? 'bg-green-100 text-green-800' :
-                                        'bg-brand-100 text-brand-800') }}">
-                                    {{ str_replace('_', ' ', $employe->role) }}
-                                </span>
-                            </dd>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-slate-400">Rôle principal</dt>
+                            <dd><span class="pro-badge pro-badge-blue capitalize">{{ str_replace('_', ' ', $employe->role) }}</span></dd>
                         </div>
                     </dl>
-                    <a href="{{ route('profile.edit') }}" class="mt-4 block text-sm text-brand-500 hover:underline">Modifier mon profil →</a>
+                    <div class="pt-2">
+                        <a href="{{ route('profile.edit') }}" class="text-xs font-semibold text-blue-400 hover:underline">Modifier mes informations →</a>
+                    </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
-                    <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-4">🏢 Mon entreprise</h4>
-                    <dl class="space-y-2 text-sm">
+                <div class="pro-card p-6 space-y-4">
+                    <h4 class="font-bold text-white text-base border-b border-white/10 pb-3">🏢 Mon entreprise</h4>
+                    <dl class="space-y-3 text-sm">
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Nom</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ optional($employe->entreprise)->nom ?? 'Non définie' }}</dd>
+                            <dt class="text-slate-400">Nom</dt>
+                            <dd class="font-semibold text-white">{{ optional($employe->entreprise)->nom ?? 'Non définie' }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Ville</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ optional($employe->entreprise)->ville ?? '—' }}</dd>
+                            <dt class="text-slate-400">Ville siège</dt>
+                            <dd class="font-medium text-slate-200">{{ optional($employe->entreprise)->ville ?? '—' }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Email</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ optional($employe->entreprise)->email ?? '—' }}</dd>
+                            <dt class="text-slate-400">Email contact</dt>
+                            <dd class="font-medium text-slate-200">{{ optional($employe->entreprise)->email ?? '—' }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-gray-500">Téléphone</dt>
-                            <dd class="font-medium dark:text-gray-100">{{ optional($employe->entreprise)->telephone ?? '—' }}</dd>
+                            <dt class="text-slate-400">Téléphone</dt>
+                            <dd class="font-medium text-slate-200">{{ optional($employe->entreprise)->telephone ?? '—' }}</dd>
                         </div>
                     </dl>
                 </div>
             </div>
 
-            {{-- Mes trajets publiés (Conducteurs & les_deux) --}}
+            {{-- Mes trajets publiés Table (For Drivers) --}}
             @if($isConducteur)
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow overflow-hidden">
-                    <div class="flex items-center justify-between px-6 py-4 border-b dark:border-gray-700">
-                        <h4 class="font-semibold text-gray-700 dark:text-gray-200">🚗 Mes trajets publiés</h4>
-                        <a href="{{ route('trajets.create') }}"
-                           class="text-sm bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-lg transition">
-                            + Nouveau
+                <div class="pro-card overflow-hidden">
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                        <h4 class="font-bold text-white text-base">🚗 Mes trajets publiés</h4>
+                        <a href="{{ route('trajets.create') }}" class="btn-pro-primary text-xs py-1.5 px-3">
+                            + Nouveau trajet
                         </a>
                     </div>
 
                     @if($trajets->isEmpty())
-                        <div class="p-8 text-center text-gray-500">
-                            <p class="text-lg">Vous n'avez pas encore publié de trajet.</p>
-                            <a href="{{ route('trajets.create') }}" class="mt-3 inline-block text-brand-600 hover:underline">Publier mon premier trajet →</a>
+                        <div class="p-8 text-center text-slate-400">
+                            <p class="text-base font-medium">Vous n'avez pas encore publié de trajet.</p>
+                            <a href="{{ route('trajets.create') }}" class="mt-2 inline-block text-sm text-blue-400 hover:underline">Publier mon premier trajet →</a>
                         </div>
                     @else
                         <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead class="bg-gray-50 dark:bg-gray-700">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-[#0D1420] text-xs font-mono uppercase text-slate-400 border-b border-white/10">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Trajet</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date / Heure</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Places</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Récurrence</th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                        <th class="px-6 py-3">Trajet</th>
+                                        <th class="px-6 py-3">Date & Heure</th>
+                                        <th class="px-6 py-3">Places</th>
+                                        <th class="px-6 py-3">Récurrence</th>
+                                        <th class="px-6 py-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                <tbody class="divide-y divide-white/5">
                                     @foreach($trajets as $trajet)
-                                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                                            <td class="px-6 py-4">
-                                                <span class="font-medium dark:text-gray-100">{{ $trajet->depart }}</span>
-                                                <span class="text-gray-400 mx-1">→</span>
-                                                <span class="font-medium dark:text-gray-100">{{ $trajet->destination }}</span>
+                                        <tr class="hover:bg-white/5 transition">
+                                            <td class="px-6 py-4 font-bold text-white">
+                                                {{ $trajet->depart }} <span class="text-slate-400 font-normal">→</span> {{ $trajet->destination }}
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                                                {{ \Carbon\Carbon::parse($trajet->date_depart)->format('d/m/Y') }}
-                                                à {{ $trajet->heure_depart }}
+                                            <td class="px-6 py-4 text-slate-300 font-mono text-xs">
+                                                {{ \Carbon\Carbon::parse($trajet->date_depart)->format('d/m/Y') }} à {{ $trajet->heure_depart }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                <span class="text-sm font-medium
-                                                    {{ $trajet->placesRestantes() > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                                <span class="pro-badge {{ $trajet->placesRestantes() > 0 ? 'pro-badge-emerald' : 'pro-badge-rose' }}">
                                                     {{ $trajet->placesRestantes() }}/{{ $trajet->places }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                                            <td class="px-6 py-4 text-slate-300 text-xs">
                                                 {{ $trajet->joursRecurrenceFormates() }}
                                             </td>
-                                            <td class="px-6 py-4 text-right space-x-2">
-                                                <a href="{{ route('trajets.show', $trajet) }}"
-                                                   class="text-sm text-gray-600 hover:text-gray-800 dark:text-gray-300">Voir</a>
-                                                <a href="{{ route('trajets.edit', $trajet) }}"
-                                                   class="text-sm text-brand-600 hover:text-brand-800">Modifier</a>
+                                            <td class="px-6 py-4 text-right space-x-3">
+                                                <a href="{{ route('trajets.show', $trajet) }}" class="text-slate-300 hover:text-white text-xs font-semibold">Voir</a>
+                                                <a href="{{ route('trajets.edit', $trajet) }}" class="text-blue-400 hover:text-blue-300 text-xs font-semibold">Modifier</a>
                                                 <form action="{{ route('trajets.destroy', $trajet) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" onclick="return confirm('Supprimer ce trajet ?')"
-                                                            class="text-sm text-red-600 hover:text-red-800">
-                                                        Supprimer
-                                                    </button>
+                                                    <button type="submit" onclick="return confirm('Supprimer ce trajet ?')" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Supprimer</button>
                                                 </form>
                                             </td>
                                         </tr>
